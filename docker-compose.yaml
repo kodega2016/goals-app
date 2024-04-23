@@ -1,0 +1,32 @@
+services:
+  goals_app_db:
+    image: mongo
+    container_name: goals_app_db
+    volumes:
+      - goals_app_db_data:/data/db
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: goals_app_backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "80:80"
+    depends_on:
+      - goals_app_db
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: goals_app_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+volumes:
+  goals_app_db_data:
